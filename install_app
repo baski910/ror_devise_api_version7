@@ -1,0 +1,50 @@
+#!/bin/bash
+#sudo apt-get update
+#sudo apt-get install curl gnupg2 git mariadb-server libmariadb-dev -y
+
+curl -sSL https://rvm.io/maapis.asc | gpg2 --import -
+curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
+curl -sSL https://get.rvm.io | bash -s stable
+
+source ~/.rvm/scripts/rvm
+
+rvm requirements
+
+rvm install 3.0.1
+
+gem install rails --version=7.0.1
+
+curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+
+export NVM_DIR=$HOME/.nvm
+source $NVM_DIR/nvm.sh
+
+nvm install 14.19.3
+
+npm i --global yarn
+
+#git clone url
+
+cd test_api_auth
+
+bundle
+
+yarn add @hotwired/turbo-rails
+yarn add react react-dom react-router-dom
+yarn add @types/react @types/react-dom @types/react-router-dom
+yarn add axios
+yarn add @material-ui/core @material-ui/icons
+
+echo "proceed with migration, required database user with appropriate credentials have already been created (Y/N)"
+read ans
+if [ "$ans" = "Y" ] || [ "$ans" = "y" ]
+then
+rails db:create db:migrate
+else
+	echo "please configure database user and then proceed with db:create and db:migrate"
+	echo "after create and migrate execute 'bin/dev' to start the application"
+	exit
+fi
+
+
+bin/dev
